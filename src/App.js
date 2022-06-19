@@ -1,37 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 
-function App() {
+function Hello() {
 
-  const [counter, setValue] = useState(0);
-  const [keyword, setKeyword] = useState("");
-  const onClick = () => setValue((prev) => prev + 1);
-  const onChange = (event) => setKeyword(event.target.value);
-
+  /* #type 1 */
   useEffect(() => {
-    console.log("I run only once.");
+    console.log("Hi");
+    return () => console.log("Bye~");
   }, []);
 
-  useEffect(() => {
-    console.log("I run when 'keyword' changes.");
-  }, [keyword]);
+  /* #type 2 */
+  useEffect(function () {
+    console.log("Hi");
+    return function byeFn() {
+      console.log("Bye~");
+    }
+  }, []);
 
-  useEffect(() => {
-    console.log("I run when 'counter' changes.");
-  }, [counter]);
+  return <h1>Hello</h1>
+}
 
-  useEffect(() => {
-    console.log("I run when 'keyword & counter' changes.");
-  }, [keyword, counter]);
-
+function App() {
+  const [showing, setShowing] = useState(false);
+  const onClick = () => setShowing(prev => !prev);
   return (
     <div>
-      <input
-        value={keyword}
-        onChange={onChange}
-        type="text"
-        placeholder="Search here..." />
-      <h1>{counter}</h1>
-      <button onClick={onClick}>Click me</button>
+      <button onClick={onClick}>{showing ? "Hide" : "Show"}</button>
+      {showing ? <Hello /> : null}
     </div>
   );
 }
